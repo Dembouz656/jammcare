@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CalendarDays, FileText, Home, MessageSquare, Pill, Stethoscope, Users, Video, CheckCircle2, XCircle } from "lucide-react";
+import { CalendarDays, FileText, Home, MessageSquare, Pill, Stethoscope, Users, Video, CheckCircle2, XCircle, Plus, Trash2, Clock } from "lucide-react";
 import { DashboardShell, StatCard } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/medecin")({
@@ -13,14 +18,23 @@ export const Route = createFileRoute("/_authenticated/medecin")({
 });
 
 interface ApptRow { id: string; scheduled_at: string; reason: string | null; status: string; patient_id: string; patient_name?: string; }
+interface AvailRow { id: string; weekday: number; start_time: string; end_time: string; slot_minutes: number; }
 
 function DoctorDashboard() {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [profileName, setProfileName] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [status, setStatus] = useState<string>("pending");
   const [appts, setAppts] = useState<ApptRow[]>([]);
   const [patientCount, setPatientCount] = useState(0);
+  const [avails, setAvails] = useState<AvailRow[]>([]);
+
+  const [availOpen, setAvailOpen] = useState(false);
+  const [newWeekday, setNewWeekday] = useState("1");
+  const [newStart, setNewStart] = useState("09:00");
+  const [newEnd, setNewEnd] = useState("12:00");
+  const [newSlot, setNewSlot] = useState("30");
 
   useEffect(() => { if (user) void load(); }, [user]);
 
@@ -48,12 +62,39 @@ function DoctorDashboard() {
     } else {
       setAppts([]); setPatientCount(0);
     }
+
+    const { data: av } = await supabase
+      .from("doctor_availability")
+      .select("id, weekday, start_time, end_time, slot_minutes")
+      .eq("doctor_id", user.id)
+      .order("weekday", { ascending: true });
+    setAvails((av ?? []) as AvailRow[]);
   };
 
   const updateStatus = async (id: string, newStatus: "confirmed" | "cancelled" | "completed") => {
     const { error } = await supabase.from("appointments").update({ status: newStatus }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Rendez-vous mis à jour");
+    void load();
+  };
+
+  const addAvail = async () => {
+    if (!user) return;
+    const { error } = await supabase.from("doctor_availability").insert({
+      doctor_id: user.id,
+      weekday: Number(newWeekday),
+      start_time: newStart,
+      end_time: newEnd,
+      slot_minutes: Number(newSlot),
+    });
+    if (error) { toast.error(error.message); return; }
+    setAvailOpen(false);
+    void load();
+  };
+
+  const delAvail = async (id: string) => {
+    const { error } = await supabase.from("doctor_availability").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
     void load();
   };
 
@@ -64,73 +105,132 @@ function DoctorDashboard() {
   const completed = appts.filter((a) => a.status === "completed").length;
 
   const nav = [
-    { label: "Tableau de bord", icon: Home, active: true },
-    { label: "Agenda", icon: CalendarDays },
-    { label: "Patients", icon: Users },
-    { label: "Téléconsultations", icon: Video },
-    { label: "Messagerie", icon: MessageSquare },
+    { label: t("agenda"), icon: Home, active: true },
+    { label: t("agenda"), icon: CalendarDays },
+    { label: t("patients"), icon: Users },
+    { label: t("video_consultation"), icon: Video },
+    { label: t("messages"), icon: MessageSquare },
     { label: "Diagnostics", icon: Stethoscope },
-    { label: "Prescriptions", icon: Pill },
+    { label: t("prescriptions"), icon: Pill },
     { label: "Dossiers", icon: FileText },
   ];
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "Dr";
 
   return (
-    <DashboardShell role={`Médecin · ${specialty}`} name={profileName || "Médecin"} initials={initials} nav={nav}>
+    <DashboardShell role={`${t("doctor")} · ${specialty}`} name={profileName || t("doctor")} initials={initials} nav={nav}>
       {status !== "approved" && (
         <div className="mb-6 rounded-2xl border border-warning/40 bg-warning/10 p-5 text-sm">
-          <p className="font-medium text-foreground">Compte en attente de validation</p>
-          <p className="mt-1 text-muted-foreground">Un administrateur doit valider votre profil avant que les patients puissent vous contacter.</p>
+          <p className="font-medium text-foreground">{t("pending_validation")}</p>
+          <p className="mt-1 text-muted-foreground">{t("pending_validation_desc")}</p>
         </div>
       )}
 
       <div className="mb-8">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">Aujourd'hui</p>
+        <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("today")}</p>
         <h1 className="text-display text-4xl">Dr. {profileName}</h1>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Consultations du jour" value={todayAppts.length} />
-        <StatCard label="Patients" value={patientCount} hint="suivis" accent="success" />
-        <StatCard label="Terminées" value={completed} hint="historique" accent="accent" />
-        <StatCard label="À venir" value={upcoming.length} accent="warning" />
+        <StatCard label={t("consultations_today")} value={todayAppts.length} />
+        <StatCard label={t("patients")} value={patientCount} hint={t("followed")} accent="success" />
+        <StatCard label={t("completed")} value={completed} accent="accent" />
+        <StatCard label={t("to_come")} value={upcoming.length} accent="warning" />
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-xl">Agenda</h2>
-          <span className="text-xs text-muted-foreground">{appts.length} rendez-vous</span>
-        </div>
-        {appts.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">Aucun rendez-vous pour le moment.</p>
-        ) : (
-          <div className="space-y-2">
-            {appts.map((a) => (
-              <div key={a.id} className="flex items-center gap-4 rounded-xl border border-border bg-surface px-4 py-3">
-                <div className="w-32 text-sm text-primary">{new Date(a.scheduled_at).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}</div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{a.patient_name}</p>
-                  <p className="truncate text-xs text-muted-foreground">{a.reason ?? "Consultation"}</p>
-                </div>
-                <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] uppercase tracking-wider">{a.status}</span>
-                {a.status === "pending" && (
-                  <Button size="sm" onClick={() => updateStatus(a.id, "confirmed")} className="h-8 bg-success text-success-foreground hover:bg-success/90">
-                    <CheckCircle2 className="mr-1 h-3.5 w-3.5" /> Confirmer
-                  </Button>
-                )}
-                {(a.status === "pending" || a.status === "confirmed") && (
-                  <>
-                    <Button size="sm" variant="ghost" onClick={() => updateStatus(a.id, "completed")} className="h-8">Terminer</Button>
-                    <Button size="sm" variant="ghost" onClick={() => updateStatus(a.id, "cancelled")} className="h-8 text-destructive">
-                      <XCircle className="h-4 w-4" />
-                    </Button>
-                  </>
-                )}
-              </div>
-            ))}
+      <div className="mt-6 grid gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-soft lg:col-span-2">
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-xl">{t("agenda")}</h2>
+            <span className="text-xs text-muted-foreground">{appts.length} {t("appointments").toLowerCase()}</span>
           </div>
-        )}
+          {appts.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">{t("no_appointments")}</p>
+          ) : (
+            <div className="space-y-2">
+              {appts.map((a) => (
+                <div key={a.id} className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3">
+                  <div className="w-32 text-sm text-primary">{new Date(a.scheduled_at).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}</div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">{a.patient_name}</p>
+                    <p className="truncate text-xs text-muted-foreground">{a.reason ?? "Consultation"}</p>
+                  </div>
+                  <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] uppercase tracking-wider">{a.status}</span>
+                  {a.status === "pending" && (
+                    <Button size="sm" onClick={() => updateStatus(a.id, "confirmed")} className="h-8 bg-success text-success-foreground hover:bg-success/90">
+                      <CheckCircle2 className="mr-1 h-3.5 w-3.5" /> {t("confirm")}
+                    </Button>
+                  )}
+                  {a.status === "confirmed" && (
+                    <Button asChild size="sm" className="h-8 bg-gradient-primary text-primary-foreground">
+                      <Link to="/call/$id" params={{ id: a.id }}>
+                        <Video className="mr-1 h-3.5 w-3.5" /> {t("join_call")}
+                      </Link>
+                    </Button>
+                  )}
+                  {(a.status === "pending" || a.status === "confirmed") && (
+                    <>
+                      <Button size="sm" variant="ghost" onClick={() => updateStatus(a.id, "completed")} className="h-8">{t("finish")}</Button>
+                      <Button size="sm" variant="ghost" onClick={() => updateStatus(a.id, "cancelled")} className="h-8 text-destructive">
+                        <XCircle className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-xl"><Clock className="h-5 w-5 text-primary" /> {t("manage_availability")}</h2>
+            <Dialog open={availOpen} onOpenChange={setAvailOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="outline"><Plus className="h-3.5 w-3.5" /></Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>{t("add_slot")}</DialogTitle></DialogHeader>
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label>{t("weekday")}</Label>
+                    <Select value={newWeekday} onValueChange={setNewWeekday}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+                          <SelectItem key={d} value={String(d)}>{t(`d${d}` as "d0")}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="space-y-2"><Label>{t("start")}</Label><Input type="time" value={newStart} onChange={(e) => setNewStart(e.target.value)} /></div>
+                    <div className="space-y-2"><Label>{t("end")}</Label><Input type="time" value={newEnd} onChange={(e) => setNewEnd(e.target.value)} /></div>
+                    <div className="space-y-2"><Label>min</Label><Input type="number" min={10} max={120} value={newSlot} onChange={(e) => setNewSlot(e.target.value)} /></div>
+                  </div>
+                </div>
+                <DialogFooter><Button onClick={addAvail} className="bg-gradient-primary text-primary-foreground">{t("confirm")}</Button></DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+          {avails.length === 0 ? (
+            <p className="py-6 text-center text-xs text-muted-foreground">{t("no_availability")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {avails.map((a) => (
+                <li key={a.id} className="flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm">
+                  <div>
+                    <p className="font-medium">{t(`d${a.weekday}` as "d0")}</p>
+                    <p className="text-xs text-muted-foreground">{a.start_time.slice(0, 5)} – {a.end_time.slice(0, 5)} · {a.slot_minutes}min</p>
+                  </div>
+                  <button onClick={() => delAvail(a.id)} className="text-muted-foreground hover:text-destructive">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </DashboardShell>
   );
