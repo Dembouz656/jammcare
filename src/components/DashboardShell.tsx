@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, type LucideIcon } from "lucide-react";
+import { LogOut, type LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
 
-interface NavItem { label: string; icon: LucideIcon; active?: boolean }
+interface NavItem { label: string; icon: LucideIcon; active?: boolean; onClick?: () => void }
 
 interface Props {
   role: string;
@@ -13,14 +15,14 @@ interface Props {
 }
 
 export function DashboardShell({ role, name, initials, nav, children }: Props) {
+  const { signOut } = useAuth();
   return (
     <div className="min-h-screen bg-surface">
       <div className="mx-auto flex max-w-[1400px] gap-6 px-4 py-6 lg:px-8">
-        {/* Sidebar */}
         <aside className="hidden w-64 shrink-0 lg:block">
           <div className="sticky top-6 rounded-3xl border border-border bg-card p-5 shadow-soft">
             <Link to="/" className="mb-6 flex items-center gap-2 text-xs text-muted-foreground transition hover:text-foreground">
-              <ArrowLeft className="h-3.5 w-3.5" /> Retour au site
+              MediRural
             </Link>
             <div className="mb-6 flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground font-semibold">
@@ -37,6 +39,7 @@ export function DashboardShell({ role, name, initials, nav, children }: Props) {
                 return (
                   <button
                     key={item.label}
+                    onClick={item.onClick}
                     className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
                       item.active
                         ? "bg-primary-soft text-foreground font-medium"
@@ -49,17 +52,32 @@ export function DashboardShell({ role, name, initials, nav, children }: Props) {
                 );
               })}
             </nav>
+            <Button
+              onClick={() => signOut()}
+              variant="ghost"
+              size="sm"
+              className="mt-6 w-full justify-start text-muted-foreground hover:text-destructive"
+            >
+              <LogOut className="mr-2 h-4 w-4" /> Déconnexion
+            </Button>
           </div>
         </aside>
 
-        {/* Main */}
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-w-0 flex-1">
+          <div className="mb-4 flex items-center justify-between lg:hidden">
+            <p className="text-display text-lg">MediRural</p>
+            <Button onClick={() => signOut()} variant="ghost" size="sm">
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+          {children}
+        </main>
       </div>
     </div>
   );
 }
 
-export function StatCard({ label, value, hint, accent = "primary" }: { label: string; value: string; hint?: string; accent?: "primary" | "success" | "warning" | "accent" }) {
+export function StatCard({ label, value, hint, accent = "primary" }: { label: string; value: string | number; hint?: string; accent?: "primary" | "success" | "warning" | "accent" }) {
   const accentClass = {
     primary: "text-primary",
     success: "text-success",
