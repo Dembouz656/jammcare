@@ -19,6 +19,9 @@ function AuthLayout() {
       return;
     }
     if (!role) return;
+    // Shared routes accessible to any authenticated user
+    const sharedPrefixes = ["/call/"];
+    if (sharedPrefixes.some((p) => location.pathname.startsWith(p))) return;
     const expected: Record<AppRole, string> = { patient: "/patient", doctor: "/medecin", admin: "/admin" };
     const allowed = expected[role];
     if (!location.pathname.startsWith(allowed)) {

@@ -94,6 +94,36 @@ export type Database = {
           },
         ]
       }
+      doctor_availability: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          end_time: string
+          id: string
+          slot_minutes: number
+          start_time: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          end_time: string
+          id?: string
+          slot_minutes?: number
+          start_time: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          end_time?: string
+          id?: string
+          slot_minutes?: number
+          start_time?: string
+          weekday?: number
+        }
+        Relationships: []
+      }
       doctors: {
         Row: {
           approved_at: string | null

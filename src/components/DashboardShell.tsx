@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { LogOut, type LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/lib/i18n";
+import { LangSwitcher } from "@/components/LangSwitcher";
 import { Button } from "@/components/ui/button";
 
 interface NavItem { label: string; icon: LucideIcon; active?: boolean; onClick?: () => void }
@@ -16,6 +18,7 @@ interface Props {
 
 export function DashboardShell({ role, name, initials, nav, children }: Props) {
   const { signOut } = useAuth();
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-surface">
       <div className="mx-auto flex max-w-[1400px] gap-6 px-4 py-6 lg:px-8">
@@ -52,23 +55,29 @@ export function DashboardShell({ role, name, initials, nav, children }: Props) {
                 );
               })}
             </nav>
-            <Button
-              onClick={() => signOut()}
-              variant="ghost"
-              size="sm"
-              className="mt-6 w-full justify-start text-muted-foreground hover:text-destructive"
-            >
-              <LogOut className="mr-2 h-4 w-4" /> Déconnexion
-            </Button>
+            <div className="mt-6 space-y-2">
+              <LangSwitcher className="w-full justify-center" />
+              <Button
+                onClick={() => signOut()}
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-muted-foreground hover:text-destructive"
+              >
+                <LogOut className="mr-2 h-4 w-4" /> {t("logout")}
+              </Button>
+            </div>
           </div>
         </aside>
 
         <main className="min-w-0 flex-1">
           <div className="mb-4 flex items-center justify-between lg:hidden">
             <p className="text-display text-lg">MediRural</p>
-            <Button onClick={() => signOut()} variant="ghost" size="sm">
-              <LogOut className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <LangSwitcher />
+              <Button onClick={() => signOut()} variant="ghost" size="sm">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           {children}
         </main>
