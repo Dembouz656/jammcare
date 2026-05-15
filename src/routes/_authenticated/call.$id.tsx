@@ -27,7 +27,7 @@ function CallPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
 
-  const [appt, setAppt] = useState<{ patient_id: string; doctor_id: string; scheduled_at: string } | null>(null);
+  const [appt, setAppt] = useState<{ patient_id: string; doctor_id: string; scheduled_at: string; status: string } | null>(null);
   const [status, setStatus] = useState<"idle" | "connecting" | "connected" | "ended">("idle");
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
@@ -45,7 +45,7 @@ function CallPage() {
     (async () => {
       const { data, error } = await supabase
         .from("appointments")
-        .select("patient_id, doctor_id, scheduled_at")
+        .select("patient_id, doctor_id, scheduled_at, status")
         .eq("id", id)
         .maybeSingle();
       if (error || !data) {
@@ -56,6 +56,11 @@ function CallPage() {
       if (data.patient_id !== user.id && data.doctor_id !== user.id) {
         toast.error("Accès refusé");
         navigate({ to: "/" });
+        return;
+      }
+      if (data.status !== "confirmed") {
+        toast.error("La téléconsultation n'est accessible qu'après confirmation du rendez-vous.");
+        navigate({ to: user.id === data.doctor_id ? "/medecin" : "/patient" });
         return;
       }
       setAppt(data);
@@ -69,9 +74,18 @@ function CallPage() {
 
     let stream: MediaStream;
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("API média indisponible (HTTPS requis)");
+      }
       stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    } catch {
-      toast.error(t("camera_error"));
+    } catch (err) {
+      const e = err as DOMException & { message?: string };
+      const msg =
+        e?.name === "NotAllowedError" ? "Permission refusée pour la caméra/micro. Autorisez l'accès dans votre navigateur."
+        : e?.name === "NotFoundError" ? "Aucune caméra ou micro détecté sur cet appareil."
+        : e?.name === "NotReadableError" ? "La caméra/micro est utilisée par une autre application."
+        : (e?.message || t("camera_error"));
+      toast.error(msg);
       setStatus("idle");
       initiatedRef.current = false;
       return;

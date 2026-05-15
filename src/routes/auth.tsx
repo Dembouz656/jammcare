@@ -72,6 +72,7 @@ const loginSchema = z.object({
 });
 
 function LoginForm() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -84,13 +85,22 @@ function LoginForm() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword(parsed.data);
-    setSubmitting(false);
-    if (error) {
-      toast.error(error.message === "Invalid login credentials" ? "Identifiants invalides" : error.message);
+    const { data: signInData, error } = await supabase.auth.signInWithPassword(parsed.data);
+    if (error || !signInData.user) {
+      setSubmitting(false);
+      toast.error(error?.message === "Invalid login credentials" ? "Identifiants invalides" : (error?.message ?? "Erreur"));
       return;
     }
+    // Fetch role immediately and route accordingly
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", signInData.user.id);
+    setSubmitting(false);
+    const list = (roles ?? []).map((r) => r.role as string);
+    const target = list.includes("admin") ? "/admin" : list.includes("doctor") ? "/medecin" : "/patient";
     toast.success("Connexion réussie");
+    navigate({ to: target });
   };
 
   return (
