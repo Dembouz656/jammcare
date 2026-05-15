@@ -99,6 +99,26 @@ export const dict: Dict = {
   d4: { fr: "Jeudi", wo: "Alxames" },
   d5: { fr: "Vendredi", wo: "Àjjuma" },
   d6: { fr: "Samedi", wo: "Gaawu" },
+
+  // Chat
+  chat: { fr: "Discussion", wo: "Waxtaan" },
+  type_message: { fr: "Écrire un message…", wo: "Bind ab bataaxal…" },
+  send: { fr: "Envoyer", wo: "Yónnee" },
+  no_messages: { fr: "Aucun message pour le moment.", wo: "Amul bataaxal léegi." },
+  you: { fr: "Vous", wo: "Yow" },
+
+  // Landing
+  landing_title: { fr: "Votre santé, notre priorité.", wo: "Sa wér-gi-yaram, sunu jëfu njëkk." },
+  landing_lead: { fr: "JammCare connecte les patients et les professionnels de santé où que vous soyez, en toute sécurité.", wo: "JammCare dafa boole aji-faj yi ak doktoor yi, fu nga mën a nekk, ci wóoreel gu mat." },
+  feature_book: { fr: "Prenez rendez-vous facilement", wo: "Jël bunt ci yomb" },
+  feature_consult: { fr: "Consultez à distance en toute sécurité", wo: "Faj ci sori ci wóoreel" },
+  feature_chat: { fr: "Échangez en temps réel avec votre médecin", wo: "Wax ak doktoor bi ci jamono ji" },
+  feature_records: { fr: "Accédez à vos dossiers médicaux", wo: "Dugal sa kayit yu paj" },
+  trust_secure: { fr: "Sécurisé", wo: "Wóor na" },
+  trust_private: { fr: "Confidentiel", wo: "Sutura" },
+  trust_human: { fr: "Humain", wo: "Nit" },
+  get_started: { fr: "Commencer", wo: "Tàmbali" },
+  already_member: { fr: "Déjà inscrit ?", wo: "Bokk nga ba noppi ?" },
 };
 
 interface I18nCtx {
