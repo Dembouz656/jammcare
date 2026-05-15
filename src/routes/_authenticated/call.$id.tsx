@@ -74,9 +74,18 @@ function CallPage() {
 
     let stream: MediaStream;
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("API média indisponible (HTTPS requis)");
+      }
       stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    } catch {
-      toast.error(t("camera_error"));
+    } catch (err) {
+      const e = err as DOMException & { message?: string };
+      const msg =
+        e?.name === "NotAllowedError" ? "Permission refusée pour la caméra/micro. Autorisez l'accès dans votre navigateur."
+        : e?.name === "NotFoundError" ? "Aucune caméra ou micro détecté sur cet appareil."
+        : e?.name === "NotReadableError" ? "La caméra/micro est utilisée par une autre application."
+        : (e?.message || t("camera_error"));
+      toast.error(msg);
       setStatus("idle");
       initiatedRef.current = false;
       return;
