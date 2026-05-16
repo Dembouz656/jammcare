@@ -31,9 +31,9 @@ function DoctorDashboard() {
   const [avails, setAvails] = useState<AvailRow[]>([]);
 
   const [availOpen, setAvailOpen] = useState(false);
-  const [newWeekday, setNewWeekday] = useState("1");
+  const [newWeekdays, setNewWeekdays] = useState<number[]>([1]);
   const [newStart, setNewStart] = useState("09:00");
-  const [newEnd, setNewEnd] = useState("12:00");
+  const [newEnd, setNewEnd] = useState("17:00");
   const [newSlot, setNewSlot] = useState("30");
 
   useEffect(() => { if (user) void load(); }, [user]);
