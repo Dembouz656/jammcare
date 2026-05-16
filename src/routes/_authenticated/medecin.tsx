@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
@@ -31,9 +31,9 @@ function DoctorDashboard() {
   const [avails, setAvails] = useState<AvailRow[]>([]);
 
   const [availOpen, setAvailOpen] = useState(false);
-  const [newWeekday, setNewWeekday] = useState("1");
+  const [newWeekdays, setNewWeekdays] = useState<number[]>([1]);
   const [newStart, setNewStart] = useState("09:00");
-  const [newEnd, setNewEnd] = useState("12:00");
+  const [newEnd, setNewEnd] = useState("17:00");
   const [newSlot, setNewSlot] = useState("30");
 
   useEffect(() => { if (user) void load(); }, [user]);
@@ -79,18 +79,28 @@ function DoctorDashboard() {
   };
 
   const addAvail = async () => {
-    if (!user) return;
-    const { error } = await supabase.from("doctor_availability").insert({
+    if (!user || newWeekdays.length === 0) {
+      toast.error("Sélectionnez au moins un jour");
+      return;
+    }
+    const rows = newWeekdays.map((d) => ({
       doctor_id: user.id,
-      weekday: Number(newWeekday),
+      weekday: d,
       start_time: newStart,
       end_time: newEnd,
       slot_minutes: Number(newSlot),
-    });
+    }));
+    const { error } = await supabase.from("doctor_availability").insert(rows);
     if (error) { toast.error(error.message); return; }
+    toast.success(`${rows.length} créneau(x) ajouté(s)`);
     setAvailOpen(false);
     void load();
   };
+
+  const toggleDay = (d: number) =>
+    setNewWeekdays((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d].sort()));
+  const allDays = () => setNewWeekdays([1, 2, 3, 4, 5, 6, 0]);
+  const clearDays = () => setNewWeekdays([]);
 
   const delAvail = async (id: string) => {
     const { error } = await supabase.from("doctor_availability").delete().eq("id", id);
@@ -193,15 +203,21 @@ function DoctorDashboard() {
                 <DialogHeader><DialogTitle>{t("add_slot")}</DialogTitle></DialogHeader>
                 <div className="space-y-3">
                   <div className="space-y-2">
-                    <Label>{t("weekday")}</Label>
-                    <Select value={newWeekday} onValueChange={setNewWeekday}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {[1, 2, 3, 4, 5, 6, 0].map((d) => (
-                          <SelectItem key={d} value={String(d)}>{t(`d${d}` as "d0")}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center justify-between">
+                      <Label>{t("weekday")}</Label>
+                      <div className="flex gap-2 text-xs">
+                        <button type="button" onClick={allDays} className="text-primary hover:underline">Tous</button>
+                        <button type="button" onClick={clearDays} className="text-muted-foreground hover:underline">Aucun</button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+                        <label key={d} className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm cursor-pointer hover:bg-secondary">
+                          <Checkbox checked={newWeekdays.includes(d)} onCheckedChange={() => toggleDay(d)} />
+                          <span>{t(`d${d}` as "d0")}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <div className="space-y-2"><Label>{t("start")}</Label><Input type="time" value={newStart} onChange={(e) => setNewStart(e.target.value)} /></div>
