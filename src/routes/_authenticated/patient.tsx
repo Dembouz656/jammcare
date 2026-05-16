@@ -148,20 +148,20 @@ function PatientDashboard() {
   const upcoming = appointments.filter((a) => new Date(a.scheduled_at) >= new Date(Date.now() - 3600000) && a.status !== "cancelled");
 
   const nav = [
-    { label: t("agenda"), icon: Home, active: true },
-    { label: t("appointments"), icon: CalendarCheck2 },
-    { label: t("video_consultation"), icon: Video },
-    { label: t("messages"), icon: MessageSquare },
-    { label: "Mon dossier", icon: FileText },
-    { label: t("prescriptions"), icon: Pill },
-    { label: "Paramètres", icon: Settings },
+    { label: t("overview"), icon: Home, sectionId: "overview", active: true },
+    { label: t("appointments"), icon: CalendarCheck2, sectionId: "appointments" },
+    { label: t("video_consultation"), icon: Video, sectionId: "appointments" },
+    { label: t("messages"), icon: MessageSquare, sectionId: "appointments" },
+    { label: t("my_record"), icon: FileText, sectionId: "appointments" },
+    { label: t("prescriptions"), icon: Pill, sectionId: "appointments" },
+    { label: t("settings"), icon: Settings, sectionId: "overview" },
   ];
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "P";
 
   return (
     <DashboardShell role={t("patient")} name={profileName || t("patient")} initials={initials} nav={nav}>
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div id="overview" className="mb-8 flex flex-wrap items-end justify-between gap-4 scroll-mt-6">
         <div>
           <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("hello")}</p>
           <h1 className="text-display text-4xl">{profileName || t("welcome")}</h1>
@@ -233,7 +233,7 @@ function PatientDashboard() {
         <StatCard label={t("messages")} value={unreadMsgs} hint={t("unread")} accent="warning" />
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+      <div id="appointments" className="mt-6 scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
         <h2 className="mb-5 text-xl">{t("next_appointments")}</h2>
         {upcoming.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">{t("no_upcoming")}</p>
