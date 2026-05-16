@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CalendarDays, FileText, Home, MessageSquare, Pill, Stethoscope, Users, Video, CheckCircle2, XCircle, Plus, Trash2, Clock } from "lucide-react";
+import { CalendarDays, FileText, Home, MessageSquare, Pill, Stethoscope, Users, Video, CheckCircle2, XCircle, Plus, Trash2, Clock, Pencil } from "lucide-react";
 import { DashboardShell, StatCard } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
