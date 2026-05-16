@@ -58,20 +58,20 @@ function AdminDashboard() {
   };
 
   const nav = [
-    { label: "Vue d'ensemble", icon: Home, active: true },
-    { label: "Utilisateurs", icon: Users },
-    { label: "Médecins", icon: Stethoscope },
-    { label: "Statistiques", icon: BarChart3 },
-    { label: "Sécurité", icon: ShieldCheck },
-    { label: "Activité", icon: Activity },
-    { label: "Paramètres", icon: Settings },
+    { label: "Vue d'ensemble", icon: Home, sectionId: "overview", active: true },
+    { label: "Utilisateurs", icon: Users, sectionId: "validation" },
+    { label: "Médecins", icon: Stethoscope, sectionId: "validation" },
+    { label: "Statistiques", icon: BarChart3, sectionId: "overview" },
+    { label: "Sécurité", icon: ShieldCheck, sectionId: "validation" },
+    { label: "Activité", icon: Activity, sectionId: "validation" },
+    { label: "Paramètres", icon: Settings, sectionId: "overview" },
   ];
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "AD";
 
   return (
     <DashboardShell role="Administrateur" name={profileName || "Admin"} initials={initials} nav={nav}>
-      <div className="mb-8">
+      <div id="overview" className="mb-8 scroll-mt-6">
         <p className="text-xs uppercase tracking-wider text-muted-foreground">Console admin</p>
         <h1 className="text-display text-4xl">Supervision de la plateforme</h1>
       </div>
@@ -83,7 +83,7 @@ function AdminDashboard() {
         <StatCard label="Rendez-vous" value={stats.appointments} accent="warning" />
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+      <div id="validation" className="mt-6 scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-xl">Validation des médecins</h2>
           <span className="rounded-full bg-warning/20 px-2.5 py-1 text-[10px] uppercase tracking-wider text-warning-foreground">

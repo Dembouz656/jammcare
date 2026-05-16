@@ -6,7 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { Button } from "@/components/ui/button";
 
-interface NavItem { label: string; icon: LucideIcon; active?: boolean; onClick?: () => void }
+interface NavItem { label: string; icon: LucideIcon; active?: boolean; onClick?: () => void; sectionId?: string; to?: string }
 
 interface Props {
   role: string;
@@ -37,17 +37,33 @@ export function DashboardShell({ role, name, initials, nav, children }: Props) {
               </div>
             </div>
             <nav className="flex flex-col gap-1">
-              {nav.map((item) => {
+              {nav.map((item, idx) => {
                 const Icon = item.icon;
+                const baseCls = `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
+                  item.active
+                    ? "bg-primary-soft text-foreground font-medium"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`;
+                if (item.to) {
+                  return (
+                    <Link key={`${item.label}-${idx}`} to={item.to} className={baseCls}>
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Link>
+                  );
+                }
+                const handleClick = () => {
+                  if (item.onClick) return item.onClick();
+                  if (item.sectionId && typeof document !== "undefined") {
+                    const el = document.getElementById(item.sectionId);
+                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                };
                 return (
                   <button
-                    key={item.label}
-                    onClick={item.onClick}
-                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
-                      item.active
-                        ? "bg-primary-soft text-foreground font-medium"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
+                    key={`${item.label}-${idx}`}
+                    onClick={handleClick}
+                    className={baseCls}
                   >
                     <Icon className="h-4 w-4" />
                     {item.label}
