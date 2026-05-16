@@ -79,18 +79,28 @@ function DoctorDashboard() {
   };
 
   const addAvail = async () => {
-    if (!user) return;
-    const { error } = await supabase.from("doctor_availability").insert({
+    if (!user || newWeekdays.length === 0) {
+      toast.error("Sélectionnez au moins un jour");
+      return;
+    }
+    const rows = newWeekdays.map((d) => ({
       doctor_id: user.id,
-      weekday: Number(newWeekday),
+      weekday: d,
       start_time: newStart,
       end_time: newEnd,
       slot_minutes: Number(newSlot),
-    });
+    }));
+    const { error } = await supabase.from("doctor_availability").insert(rows);
     if (error) { toast.error(error.message); return; }
+    toast.success(`${rows.length} créneau(x) ajouté(s)`);
     setAvailOpen(false);
     void load();
   };
+
+  const toggleDay = (d: number) =>
+    setNewWeekdays((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d].sort()));
+  const allDays = () => setNewWeekdays([1, 2, 3, 4, 5, 6, 0]);
+  const clearDays = () => setNewWeekdays([]);
 
   const delAvail = async (id: string) => {
     const { error } = await supabase.from("doctor_availability").delete().eq("id", id);
