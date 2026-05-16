@@ -167,7 +167,7 @@ function DoctorDashboard() {
         </div>
       )}
 
-      <div className="mb-8">
+      <div id="overview" className="mb-8 scroll-mt-6">
         <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("today")}</p>
         <h1 className="text-display text-4xl">Dr. {profileName}</h1>
       </div>
@@ -180,7 +180,7 @@ function DoctorDashboard() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-soft lg:col-span-2">
+        <div id="agenda" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft lg:col-span-2">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-xl">{t("agenda")}</h2>
             <span className="text-xs text-muted-foreground">{appts.length} {t("appointments").toLowerCase()}</span>
