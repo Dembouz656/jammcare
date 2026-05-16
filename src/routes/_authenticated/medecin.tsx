@@ -223,7 +223,7 @@ function DoctorDashboard() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+        <div id="availability" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="flex items-center gap-2 text-xl"><Clock className="h-5 w-5 text-primary" /> {t("manage_availability")}</h2>
             <Dialog open={availOpen} onOpenChange={setAvailOpen}>
@@ -255,6 +255,20 @@ function DoctorDashboard() {
                     <div className="space-y-2"><Label>{t("end")}</Label><Input type="time" value={newEnd} onChange={(e) => setNewEnd(e.target.value)} /></div>
                     <div className="space-y-2"><Label>min</Label><Input type="number" min={10} max={120} value={newSlot} onChange={(e) => setNewSlot(e.target.value)} /></div>
                   </div>
+                  <div className="rounded-lg border border-border bg-surface p-3">
+                    <p className="mb-2 text-xs text-muted-foreground">
+                      {t("generated_slots")} · {previewSlots.length * Math.max(newWeekdays.length, 1)} {t("slots_count")}
+                    </p>
+                    {previewSlots.length === 0 ? (
+                      <p className="text-xs text-destructive">⚠ {t("no_slot")}</p>
+                    ) : (
+                      <div className="flex max-h-32 flex-wrap gap-1.5 overflow-y-auto">
+                        {previewSlots.map((s) => (
+                          <span key={s} className="rounded-md bg-primary-soft px-2 py-0.5 text-xs text-primary">{s}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <DialogFooter><Button onClick={addAvail} className="bg-gradient-primary text-primary-foreground">{t("confirm")}</Button></DialogFooter>
               </DialogContent>
@@ -270,15 +284,54 @@ function DoctorDashboard() {
                     <p className="font-medium">{t(`d${a.weekday}` as "d0")}</p>
                     <p className="text-xs text-muted-foreground">{a.start_time.slice(0, 5)} – {a.end_time.slice(0, 5)} · {a.slot_minutes}min</p>
                   </div>
-                  <button onClick={() => delAvail(a.id)} className="text-muted-foreground hover:text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => setEditAvail(a)} className="rounded p-1 text-muted-foreground hover:bg-secondary hover:text-foreground" title={t("edit")}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                    <button onClick={() => delAvail(a.id)} className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" title={t("delete")}>
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
           )}
         </div>
       </div>
+
+      <Dialog open={!!editAvail} onOpenChange={(o) => !o && setEditAvail(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{t("edit")} · {editAvail && t(`d${editAvail.weekday}` as "d0")}</DialogTitle></DialogHeader>
+          {editAvail && (
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label>{t("weekday")}</Label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setEditAvail({ ...editAvail, weekday: d })}
+                      className={`rounded-lg border px-2 py-1.5 text-xs transition ${
+                        editAvail.weekday === d ? "border-primary bg-primary text-primary-foreground" : "border-border bg-surface"
+                      }`}
+                    >{t(`d${d}` as "d0").slice(0, 3)}</button>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="space-y-2"><Label>{t("start")}</Label><Input type="time" value={editAvail.start_time.slice(0, 5)} onChange={(e) => setEditAvail({ ...editAvail, start_time: e.target.value })} /></div>
+                <div className="space-y-2"><Label>{t("end")}</Label><Input type="time" value={editAvail.end_time.slice(0, 5)} onChange={(e) => setEditAvail({ ...editAvail, end_time: e.target.value })} /></div>
+                <div className="space-y-2"><Label>min</Label><Input type="number" min={10} max={120} value={editAvail.slot_minutes} onChange={(e) => setEditAvail({ ...editAvail, slot_minutes: Number(e.target.value) })} /></div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditAvail(null)}>{t("cancel")}</Button>
+            <Button onClick={saveEdit} className="bg-gradient-primary text-primary-foreground">{t("confirm")}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardShell>
   );
 }
