@@ -203,15 +203,21 @@ function DoctorDashboard() {
                 <DialogHeader><DialogTitle>{t("add_slot")}</DialogTitle></DialogHeader>
                 <div className="space-y-3">
                   <div className="space-y-2">
-                    <Label>{t("weekday")}</Label>
-                    <Select value={newWeekday} onValueChange={setNewWeekday}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {[1, 2, 3, 4, 5, 6, 0].map((d) => (
-                          <SelectItem key={d} value={String(d)}>{t(`d${d}` as "d0")}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center justify-between">
+                      <Label>{t("weekday")}</Label>
+                      <div className="flex gap-2 text-xs">
+                        <button type="button" onClick={allDays} className="text-primary hover:underline">Tous</button>
+                        <button type="button" onClick={clearDays} className="text-muted-foreground hover:underline">Aucun</button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+                        <label key={d} className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm cursor-pointer hover:bg-secondary">
+                          <Checkbox checked={newWeekdays.includes(d)} onCheckedChange={() => toggleDay(d)} />
+                          <span>{t(`d${d}` as "d0")}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <div className="space-y-2"><Label>{t("start")}</Label><Input type="time" value={newStart} onChange={(e) => setNewStart(e.target.value)} /></div>
