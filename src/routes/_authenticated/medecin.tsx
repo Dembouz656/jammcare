@@ -148,12 +148,12 @@ function DoctorDashboard() {
     { label: t("overview"), icon: Home, sectionId: "overview", active: true },
     { label: t("agenda"), icon: CalendarDays, sectionId: "agenda" },
     { label: t("availability"), icon: Clock, sectionId: "availability" },
-    { label: t("patients"), icon: Users, sectionId: "agenda" },
-    { label: t("video_consultation"), icon: Video, sectionId: "agenda" },
-    { label: t("messages"), icon: MessageSquare, sectionId: "agenda" },
-    { label: "Diagnostics", icon: Stethoscope, sectionId: "agenda" },
-    { label: t("prescriptions"), icon: Pill, sectionId: "agenda" },
-    { label: "Dossiers", icon: FileText, sectionId: "agenda" },
+    { label: t("patients"), icon: Users, sectionId: "patients" },
+    { label: t("video_consultation"), icon: Video, sectionId: "video" },
+    { label: t("messages"), icon: MessageSquare, sectionId: "messages" },
+    { label: "Diagnostics", icon: Stethoscope, sectionId: "diagnostics" },
+    { label: t("prescriptions"), icon: Pill, sectionId: "prescriptions" },
+    { label: "Dossiers", icon: FileText, sectionId: "records" },
   ];
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "Dr";
@@ -297,6 +297,65 @@ function DoctorDashboard() {
             </ul>
           )}
         </div>
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <section id="patients" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-4 text-xl flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> {t("patients")}</h2>
+          {patientCount === 0 ? (
+            <p className="py-6 text-center text-sm text-muted-foreground">{t("no_appointments")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {[...new Map(appts.map((a) => [a.patient_id, a])).values()].map((a) => (
+                <li key={a.patient_id} className="flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm">
+                  <span>{a.patient_name}</span>
+                  <span className="text-xs text-muted-foreground">{appts.filter((x) => x.patient_id === a.patient_id).length} RDV</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section id="video" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-4 text-xl flex items-center gap-2"><Video className="h-5 w-5 text-primary" /> {t("video_consultation")}</h2>
+          {appts.filter((a) => a.status === "confirmed").length === 0 ? (
+            <p className="py-6 text-center text-sm text-muted-foreground">{t("no_upcoming")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {appts.filter((a) => a.status === "confirmed").map((a) => (
+                <li key={a.id} className="flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm">
+                  <div>
+                    <p className="font-medium">{a.patient_name}</p>
+                    <p className="text-xs text-muted-foreground">{new Date(a.scheduled_at).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}</p>
+                  </div>
+                  <Button asChild size="sm" className="bg-gradient-primary text-primary-foreground">
+                    <Link to="/call/$id" params={{ id: a.id }}><Video className="mr-1 h-3.5 w-3.5" /> {t("join_call")}</Link>
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section id="messages" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-4 text-xl flex items-center gap-2"><MessageSquare className="h-5 w-5 text-primary" /> {t("messages")}</h2>
+          <p className="text-sm text-muted-foreground">Échangez avec vos patients via la page de téléconsultation.</p>
+        </section>
+
+        <section id="diagnostics" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-4 text-xl flex items-center gap-2"><Stethoscope className="h-5 w-5 text-primary" /> Diagnostics</h2>
+          <p className="text-sm text-muted-foreground">{completed} consultation(s) terminée(s).</p>
+        </section>
+
+        <section id="prescriptions" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-4 text-xl flex items-center gap-2"><Pill className="h-5 w-5 text-primary" /> {t("prescriptions")}</h2>
+          <p className="text-sm text-muted-foreground">Créez les ordonnances depuis la consultation terminée.</p>
+        </section>
+
+        <section id="records" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-4 text-xl flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Dossiers patients</h2>
+          <p className="text-sm text-muted-foreground">{patientCount} dossier(s) actif(s).</p>
+        </section>
       </div>
 
       <Dialog open={!!editAvail} onOpenChange={(o) => !o && setEditAvail(null)}>
