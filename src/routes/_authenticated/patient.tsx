@@ -150,11 +150,11 @@ function PatientDashboard() {
   const nav = [
     { label: t("overview"), icon: Home, sectionId: "overview", active: true },
     { label: t("appointments"), icon: CalendarCheck2, sectionId: "appointments" },
-    { label: t("video_consultation"), icon: Video, sectionId: "appointments" },
-    { label: t("messages"), icon: MessageSquare, sectionId: "appointments" },
-    { label: t("my_record"), icon: FileText, sectionId: "appointments" },
-    { label: t("prescriptions"), icon: Pill, sectionId: "appointments" },
-    { label: t("settings"), icon: Settings, sectionId: "overview" },
+    { label: t("video_consultation"), icon: Video, sectionId: "video" },
+    { label: t("messages"), icon: MessageSquare, sectionId: "messages" },
+    { label: t("my_record"), icon: FileText, sectionId: "record" },
+    { label: t("prescriptions"), icon: Pill, sectionId: "prescriptions" },
+    { label: t("settings"), icon: Settings, sectionId: "settings" },
   ];
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "P";
