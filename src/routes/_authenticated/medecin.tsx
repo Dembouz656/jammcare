@@ -148,12 +148,12 @@ function DoctorDashboard() {
     { label: t("overview"), icon: Home, sectionId: "overview", active: true },
     { label: t("agenda"), icon: CalendarDays, sectionId: "agenda" },
     { label: t("availability"), icon: Clock, sectionId: "availability" },
-    { label: t("patients"), icon: Users, sectionId: "agenda" },
-    { label: t("video_consultation"), icon: Video, sectionId: "agenda" },
-    { label: t("messages"), icon: MessageSquare, sectionId: "agenda" },
-    { label: "Diagnostics", icon: Stethoscope, sectionId: "agenda" },
-    { label: t("prescriptions"), icon: Pill, sectionId: "agenda" },
-    { label: "Dossiers", icon: FileText, sectionId: "agenda" },
+    { label: t("patients"), icon: Users, sectionId: "patients" },
+    { label: t("video_consultation"), icon: Video, sectionId: "video" },
+    { label: t("messages"), icon: MessageSquare, sectionId: "messages" },
+    { label: "Diagnostics", icon: Stethoscope, sectionId: "diagnostics" },
+    { label: t("prescriptions"), icon: Pill, sectionId: "prescriptions" },
+    { label: "Dossiers", icon: FileText, sectionId: "records" },
   ];
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "Dr";
