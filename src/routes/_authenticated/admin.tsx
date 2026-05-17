@@ -118,7 +118,6 @@ function AdminDashboard() {
           </div>
         )}
       </div>
-      </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <section id="users" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
