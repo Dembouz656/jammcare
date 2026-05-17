@@ -118,6 +118,30 @@ function AdminDashboard() {
           </div>
         )}
       </div>
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <section id="users" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-2 text-xl flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Utilisateurs</h2>
+          <p className="text-sm text-muted-foreground">{stats.users} compte(s) actif(s) — dont {stats.patients} patient(s) et {stats.doctors} médecin(s) validé(s).</p>
+        </section>
+        <section id="stats" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-2 text-xl flex items-center gap-2"><BarChart3 className="h-5 w-5 text-primary" /> Statistiques</h2>
+          <p className="text-sm text-muted-foreground">{stats.appointments} rendez-vous au total sur la plateforme.</p>
+        </section>
+        <section id="security" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-2 text-xl flex items-center gap-2"><ShieldCheck className="h-5 w-5 text-primary" /> Sécurité</h2>
+          <p className="text-sm text-muted-foreground">RLS activé sur toutes les tables sensibles. Validez les médecins ci-dessus avant qu’ils ne soient visibles.</p>
+        </section>
+        <section id="activity" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <h2 className="mb-2 text-xl flex items-center gap-2"><Activity className="h-5 w-5 text-primary" /> Activité</h2>
+          <p className="text-sm text-muted-foreground">{pending.length} demande(s) de validation en attente.</p>
+        </section>
+        <section id="settings" className="scroll-mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft lg:col-span-2">
+          <h2 className="mb-2 text-xl flex items-center gap-2"><Settings className="h-5 w-5 text-primary" /> Paramètres</h2>
+          <p className="text-sm text-muted-foreground">Email administrateur : {profileName}. Configuration globale gérée via Lovable Cloud.</p>
+        </section>
+      </div>
     </DashboardShell>
   );
 }
