@@ -74,10 +74,21 @@ function CallPage() {
 
     let stream: MediaStream;
     try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error("API média indisponible (HTTPS requis)");
+      if (!window.isSecureContext) {
+        throw new Error("Contexte non sécurisé : ouvre la page en HTTPS (ou via l'URL publiée).");
       }
-      stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("API média indisponible dans ce navigateur/iframe.");
+      }
+      console.info("[call] requesting getUserMedia…");
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+        audio: { echoCancellation: true, noiseSuppression: true },
+      });
+      console.info("[call] stream acquired", {
+        videoTracks: stream.getVideoTracks().map((t) => ({ label: t.label, enabled: t.enabled, muted: t.muted, readyState: t.readyState })),
+        audioTracks: stream.getAudioTracks().map((t) => ({ label: t.label, enabled: t.enabled })),
+      });
     } catch (err) {
       const e = err as DOMException & { message?: string };
       const msg =
@@ -91,15 +102,32 @@ function CallPage() {
       return;
     }
     localStream.current = stream;
-    if (localVideo.current) localVideo.current.srcObject = stream;
+    if (localVideo.current) {
+      const v = localVideo.current;
+      v.srcObject = stream;
+      v.muted = true;
+      v.playsInline = true;
+      try {
+        await v.play();
+        console.info("[call] local video playing");
+      } catch (e) {
+        console.warn("[call] local video play() failed", e);
+      }
+    } else {
+      console.warn("[call] localVideo ref is null");
+    }
 
     const pc = new RTCPeerConnection(ICE);
     pcRef.current = pc;
     stream.getTracks().forEach((t) => pc.addTrack(t, stream));
+    pc.oniceconnectionstatechange = () => console.info("[call] ice state:", pc.iceConnectionState);
+    pc.onconnectionstatechange = () => console.info("[call] pc state:", pc.connectionState);
 
     pc.ontrack = (ev) => {
+      console.info("[call] remote track received", ev.track.kind);
       if (remoteVideo.current && ev.streams[0]) {
         remoteVideo.current.srcObject = ev.streams[0];
+        remoteVideo.current.play().catch((e) => console.warn("[call] remote play() failed", e));
         setStatus("connected");
       }
     };
