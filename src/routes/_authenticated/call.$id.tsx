@@ -74,10 +74,21 @@ function CallPage() {
 
     let stream: MediaStream;
     try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error("API média indisponible (HTTPS requis)");
+      if (!window.isSecureContext) {
+        throw new Error("Contexte non sécurisé : ouvre la page en HTTPS (ou via l'URL publiée).");
       }
-      stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("API média indisponible dans ce navigateur/iframe.");
+      }
+      console.info("[call] requesting getUserMedia…");
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+        audio: { echoCancellation: true, noiseSuppression: true },
+      });
+      console.info("[call] stream acquired", {
+        videoTracks: stream.getVideoTracks().map((t) => ({ label: t.label, enabled: t.enabled, muted: t.muted, readyState: t.readyState })),
+        audioTracks: stream.getAudioTracks().map((t) => ({ label: t.label, enabled: t.enabled })),
+      });
     } catch (err) {
       const e = err as DOMException & { message?: string };
       const msg =
