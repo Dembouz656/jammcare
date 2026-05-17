@@ -59,12 +59,12 @@ function AdminDashboard() {
 
   const nav = [
     { label: "Vue d'ensemble", icon: Home, sectionId: "overview", active: true },
-    { label: "Utilisateurs", icon: Users, sectionId: "validation" },
+    { label: "Utilisateurs", icon: Users, sectionId: "users" },
     { label: "Médecins", icon: Stethoscope, sectionId: "validation" },
-    { label: "Statistiques", icon: BarChart3, sectionId: "overview" },
-    { label: "Sécurité", icon: ShieldCheck, sectionId: "validation" },
-    { label: "Activité", icon: Activity, sectionId: "validation" },
-    { label: "Paramètres", icon: Settings, sectionId: "overview" },
+    { label: "Statistiques", icon: BarChart3, sectionId: "stats" },
+    { label: "Sécurité", icon: ShieldCheck, sectionId: "security" },
+    { label: "Activité", icon: Activity, sectionId: "activity" },
+    { label: "Paramètres", icon: Settings, sectionId: "settings" },
   ];
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "AD";
