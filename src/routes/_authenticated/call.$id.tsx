@@ -102,15 +102,32 @@ function CallPage() {
       return;
     }
     localStream.current = stream;
-    if (localVideo.current) localVideo.current.srcObject = stream;
+    if (localVideo.current) {
+      const v = localVideo.current;
+      v.srcObject = stream;
+      v.muted = true;
+      v.playsInline = true;
+      try {
+        await v.play();
+        console.info("[call] local video playing");
+      } catch (e) {
+        console.warn("[call] local video play() failed", e);
+      }
+    } else {
+      console.warn("[call] localVideo ref is null");
+    }
 
     const pc = new RTCPeerConnection(ICE);
     pcRef.current = pc;
     stream.getTracks().forEach((t) => pc.addTrack(t, stream));
+    pc.oniceconnectionstatechange = () => console.info("[call] ice state:", pc.iceConnectionState);
+    pc.onconnectionstatechange = () => console.info("[call] pc state:", pc.connectionState);
 
     pc.ontrack = (ev) => {
+      console.info("[call] remote track received", ev.track.kind);
       if (remoteVideo.current && ev.streams[0]) {
         remoteVideo.current.srcObject = ev.streams[0];
+        remoteVideo.current.play().catch((e) => console.warn("[call] remote play() failed", e));
         setStatus("connected");
       }
     };
