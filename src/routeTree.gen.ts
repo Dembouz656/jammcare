@@ -15,7 +15,30 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedPatientRouteImport } from './routes/_authenticated/patient'
 import { Route as AuthenticatedMedecinRouteImport } from './routes/_authenticated/medecin'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedPatientIndexRouteImport } from './routes/_authenticated/patient.index'
+import { Route as AuthenticatedMedecinIndexRouteImport } from './routes/_authenticated/medecin.index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedPatientVideoRouteImport } from './routes/_authenticated/patient.video'
+import { Route as AuthenticatedPatientSettingsRouteImport } from './routes/_authenticated/patient.settings'
+import { Route as AuthenticatedPatientRecordRouteImport } from './routes/_authenticated/patient.record'
+import { Route as AuthenticatedPatientPrescriptionsRouteImport } from './routes/_authenticated/patient.prescriptions'
+import { Route as AuthenticatedPatientMessagesRouteImport } from './routes/_authenticated/patient.messages'
+import { Route as AuthenticatedPatientAppointmentsRouteImport } from './routes/_authenticated/patient.appointments'
+import { Route as AuthenticatedMedecinVideoRouteImport } from './routes/_authenticated/medecin.video'
+import { Route as AuthenticatedMedecinRecordsRouteImport } from './routes/_authenticated/medecin.records'
+import { Route as AuthenticatedMedecinPrescriptionsRouteImport } from './routes/_authenticated/medecin.prescriptions'
+import { Route as AuthenticatedMedecinPatientsRouteImport } from './routes/_authenticated/medecin.patients'
+import { Route as AuthenticatedMedecinMessagesRouteImport } from './routes/_authenticated/medecin.messages'
+import { Route as AuthenticatedMedecinDiagnosticsRouteImport } from './routes/_authenticated/medecin.diagnostics'
+import { Route as AuthenticatedMedecinAvailabilityRouteImport } from './routes/_authenticated/medecin.availability'
+import { Route as AuthenticatedMedecinAgendaRouteImport } from './routes/_authenticated/medecin.agenda'
 import { Route as AuthenticatedCallIdRouteImport } from './routes/_authenticated/call.$id'
+import { Route as AuthenticatedAdminValidationRouteImport } from './routes/_authenticated/admin.validation'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
+import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
+import { Route as AuthenticatedAdminSecurityRouteImport } from './routes/_authenticated/admin.security'
+import { Route as AuthenticatedAdminActivityRouteImport } from './routes/_authenticated/admin.activity'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -46,43 +69,299 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPatientIndexRoute =
+  AuthenticatedPatientIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPatientRoute,
+  } as any)
+const AuthenticatedMedecinIndexRoute =
+  AuthenticatedMedecinIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedPatientVideoRoute =
+  AuthenticatedPatientVideoRouteImport.update({
+    id: '/video',
+    path: '/video',
+    getParentRoute: () => AuthenticatedPatientRoute,
+  } as any)
+const AuthenticatedPatientSettingsRoute =
+  AuthenticatedPatientSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedPatientRoute,
+  } as any)
+const AuthenticatedPatientRecordRoute =
+  AuthenticatedPatientRecordRouteImport.update({
+    id: '/record',
+    path: '/record',
+    getParentRoute: () => AuthenticatedPatientRoute,
+  } as any)
+const AuthenticatedPatientPrescriptionsRoute =
+  AuthenticatedPatientPrescriptionsRouteImport.update({
+    id: '/prescriptions',
+    path: '/prescriptions',
+    getParentRoute: () => AuthenticatedPatientRoute,
+  } as any)
+const AuthenticatedPatientMessagesRoute =
+  AuthenticatedPatientMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedPatientRoute,
+  } as any)
+const AuthenticatedPatientAppointmentsRoute =
+  AuthenticatedPatientAppointmentsRouteImport.update({
+    id: '/appointments',
+    path: '/appointments',
+    getParentRoute: () => AuthenticatedPatientRoute,
+  } as any)
+const AuthenticatedMedecinVideoRoute =
+  AuthenticatedMedecinVideoRouteImport.update({
+    id: '/video',
+    path: '/video',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedMedecinRecordsRoute =
+  AuthenticatedMedecinRecordsRouteImport.update({
+    id: '/records',
+    path: '/records',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedMedecinPrescriptionsRoute =
+  AuthenticatedMedecinPrescriptionsRouteImport.update({
+    id: '/prescriptions',
+    path: '/prescriptions',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedMedecinPatientsRoute =
+  AuthenticatedMedecinPatientsRouteImport.update({
+    id: '/patients',
+    path: '/patients',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedMedecinMessagesRoute =
+  AuthenticatedMedecinMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedMedecinDiagnosticsRoute =
+  AuthenticatedMedecinDiagnosticsRouteImport.update({
+    id: '/diagnostics',
+    path: '/diagnostics',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedMedecinAvailabilityRoute =
+  AuthenticatedMedecinAvailabilityRouteImport.update({
+    id: '/availability',
+    path: '/availability',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
+const AuthenticatedMedecinAgendaRoute =
+  AuthenticatedMedecinAgendaRouteImport.update({
+    id: '/agenda',
+    path: '/agenda',
+    getParentRoute: () => AuthenticatedMedecinRoute,
+  } as any)
 const AuthenticatedCallIdRoute = AuthenticatedCallIdRouteImport.update({
   id: '/call/$id',
   path: '/call/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminValidationRoute =
+  AuthenticatedAdminValidationRouteImport.update({
+    id: '/validation',
+    path: '/validation',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminStatsRoute = AuthenticatedAdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSecurityRoute =
+  AuthenticatedAdminSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminActivityRoute =
+  AuthenticatedAdminActivityRouteImport.update({
+    id: '/activity',
+    path: '/activity',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/admin': typeof AuthenticatedAdminRoute
-  '/medecin': typeof AuthenticatedMedecinRoute
-  '/patient': typeof AuthenticatedPatientRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/medecin': typeof AuthenticatedMedecinRouteWithChildren
+  '/patient': typeof AuthenticatedPatientRouteWithChildren
+  '/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/admin/security': typeof AuthenticatedAdminSecurityRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/validation': typeof AuthenticatedAdminValidationRoute
   '/call/$id': typeof AuthenticatedCallIdRoute
+  '/medecin/agenda': typeof AuthenticatedMedecinAgendaRoute
+  '/medecin/availability': typeof AuthenticatedMedecinAvailabilityRoute
+  '/medecin/diagnostics': typeof AuthenticatedMedecinDiagnosticsRoute
+  '/medecin/messages': typeof AuthenticatedMedecinMessagesRoute
+  '/medecin/patients': typeof AuthenticatedMedecinPatientsRoute
+  '/medecin/prescriptions': typeof AuthenticatedMedecinPrescriptionsRoute
+  '/medecin/records': typeof AuthenticatedMedecinRecordsRoute
+  '/medecin/video': typeof AuthenticatedMedecinVideoRoute
+  '/patient/appointments': typeof AuthenticatedPatientAppointmentsRoute
+  '/patient/messages': typeof AuthenticatedPatientMessagesRoute
+  '/patient/prescriptions': typeof AuthenticatedPatientPrescriptionsRoute
+  '/patient/record': typeof AuthenticatedPatientRecordRoute
+  '/patient/settings': typeof AuthenticatedPatientSettingsRoute
+  '/patient/video': typeof AuthenticatedPatientVideoRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/medecin/': typeof AuthenticatedMedecinIndexRoute
+  '/patient/': typeof AuthenticatedPatientIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/admin': typeof AuthenticatedAdminRoute
-  '/medecin': typeof AuthenticatedMedecinRoute
-  '/patient': typeof AuthenticatedPatientRoute
+  '/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/admin/security': typeof AuthenticatedAdminSecurityRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/validation': typeof AuthenticatedAdminValidationRoute
   '/call/$id': typeof AuthenticatedCallIdRoute
+  '/medecin/agenda': typeof AuthenticatedMedecinAgendaRoute
+  '/medecin/availability': typeof AuthenticatedMedecinAvailabilityRoute
+  '/medecin/diagnostics': typeof AuthenticatedMedecinDiagnosticsRoute
+  '/medecin/messages': typeof AuthenticatedMedecinMessagesRoute
+  '/medecin/patients': typeof AuthenticatedMedecinPatientsRoute
+  '/medecin/prescriptions': typeof AuthenticatedMedecinPrescriptionsRoute
+  '/medecin/records': typeof AuthenticatedMedecinRecordsRoute
+  '/medecin/video': typeof AuthenticatedMedecinVideoRoute
+  '/patient/appointments': typeof AuthenticatedPatientAppointmentsRoute
+  '/patient/messages': typeof AuthenticatedPatientMessagesRoute
+  '/patient/prescriptions': typeof AuthenticatedPatientPrescriptionsRoute
+  '/patient/record': typeof AuthenticatedPatientRecordRoute
+  '/patient/settings': typeof AuthenticatedPatientSettingsRoute
+  '/patient/video': typeof AuthenticatedPatientVideoRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/medecin': typeof AuthenticatedMedecinIndexRoute
+  '/patient': typeof AuthenticatedPatientIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/medecin': typeof AuthenticatedMedecinRoute
-  '/_authenticated/patient': typeof AuthenticatedPatientRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/medecin': typeof AuthenticatedMedecinRouteWithChildren
+  '/_authenticated/patient': typeof AuthenticatedPatientRouteWithChildren
+  '/_authenticated/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/_authenticated/admin/security': typeof AuthenticatedAdminSecurityRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/admin/validation': typeof AuthenticatedAdminValidationRoute
   '/_authenticated/call/$id': typeof AuthenticatedCallIdRoute
+  '/_authenticated/medecin/agenda': typeof AuthenticatedMedecinAgendaRoute
+  '/_authenticated/medecin/availability': typeof AuthenticatedMedecinAvailabilityRoute
+  '/_authenticated/medecin/diagnostics': typeof AuthenticatedMedecinDiagnosticsRoute
+  '/_authenticated/medecin/messages': typeof AuthenticatedMedecinMessagesRoute
+  '/_authenticated/medecin/patients': typeof AuthenticatedMedecinPatientsRoute
+  '/_authenticated/medecin/prescriptions': typeof AuthenticatedMedecinPrescriptionsRoute
+  '/_authenticated/medecin/records': typeof AuthenticatedMedecinRecordsRoute
+  '/_authenticated/medecin/video': typeof AuthenticatedMedecinVideoRoute
+  '/_authenticated/patient/appointments': typeof AuthenticatedPatientAppointmentsRoute
+  '/_authenticated/patient/messages': typeof AuthenticatedPatientMessagesRoute
+  '/_authenticated/patient/prescriptions': typeof AuthenticatedPatientPrescriptionsRoute
+  '/_authenticated/patient/record': typeof AuthenticatedPatientRecordRoute
+  '/_authenticated/patient/settings': typeof AuthenticatedPatientSettingsRoute
+  '/_authenticated/patient/video': typeof AuthenticatedPatientVideoRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/medecin/': typeof AuthenticatedMedecinIndexRoute
+  '/_authenticated/patient/': typeof AuthenticatedPatientIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/admin' | '/medecin' | '/patient' | '/call/$id'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/admin'
+    | '/medecin'
+    | '/patient'
+    | '/admin/activity'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/stats'
+    | '/admin/users'
+    | '/admin/validation'
+    | '/call/$id'
+    | '/medecin/agenda'
+    | '/medecin/availability'
+    | '/medecin/diagnostics'
+    | '/medecin/messages'
+    | '/medecin/patients'
+    | '/medecin/prescriptions'
+    | '/medecin/records'
+    | '/medecin/video'
+    | '/patient/appointments'
+    | '/patient/messages'
+    | '/patient/prescriptions'
+    | '/patient/record'
+    | '/patient/settings'
+    | '/patient/video'
+    | '/admin/'
+    | '/medecin/'
+    | '/patient/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/admin' | '/medecin' | '/patient' | '/call/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/admin/activity'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/stats'
+    | '/admin/users'
+    | '/admin/validation'
+    | '/call/$id'
+    | '/medecin/agenda'
+    | '/medecin/availability'
+    | '/medecin/diagnostics'
+    | '/medecin/messages'
+    | '/medecin/patients'
+    | '/medecin/prescriptions'
+    | '/medecin/records'
+    | '/medecin/video'
+    | '/patient/appointments'
+    | '/patient/messages'
+    | '/patient/prescriptions'
+    | '/patient/record'
+    | '/patient/settings'
+    | '/patient/video'
+    | '/admin'
+    | '/medecin'
+    | '/patient'
   id:
     | '__root__'
     | '/'
@@ -91,7 +370,30 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/medecin'
     | '/_authenticated/patient'
+    | '/_authenticated/admin/activity'
+    | '/_authenticated/admin/security'
+    | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/stats'
+    | '/_authenticated/admin/users'
+    | '/_authenticated/admin/validation'
     | '/_authenticated/call/$id'
+    | '/_authenticated/medecin/agenda'
+    | '/_authenticated/medecin/availability'
+    | '/_authenticated/medecin/diagnostics'
+    | '/_authenticated/medecin/messages'
+    | '/_authenticated/medecin/patients'
+    | '/_authenticated/medecin/prescriptions'
+    | '/_authenticated/medecin/records'
+    | '/_authenticated/medecin/video'
+    | '/_authenticated/patient/appointments'
+    | '/_authenticated/patient/messages'
+    | '/_authenticated/patient/prescriptions'
+    | '/_authenticated/patient/record'
+    | '/_authenticated/patient/settings'
+    | '/_authenticated/patient/video'
+    | '/_authenticated/admin/'
+    | '/_authenticated/medecin/'
+    | '/_authenticated/patient/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -144,6 +446,125 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/patient/': {
+      id: '/_authenticated/patient/'
+      path: '/'
+      fullPath: '/patient/'
+      preLoaderRoute: typeof AuthenticatedPatientIndexRouteImport
+      parentRoute: typeof AuthenticatedPatientRoute
+    }
+    '/_authenticated/medecin/': {
+      id: '/_authenticated/medecin/'
+      path: '/'
+      fullPath: '/medecin/'
+      preLoaderRoute: typeof AuthenticatedMedecinIndexRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/patient/video': {
+      id: '/_authenticated/patient/video'
+      path: '/video'
+      fullPath: '/patient/video'
+      preLoaderRoute: typeof AuthenticatedPatientVideoRouteImport
+      parentRoute: typeof AuthenticatedPatientRoute
+    }
+    '/_authenticated/patient/settings': {
+      id: '/_authenticated/patient/settings'
+      path: '/settings'
+      fullPath: '/patient/settings'
+      preLoaderRoute: typeof AuthenticatedPatientSettingsRouteImport
+      parentRoute: typeof AuthenticatedPatientRoute
+    }
+    '/_authenticated/patient/record': {
+      id: '/_authenticated/patient/record'
+      path: '/record'
+      fullPath: '/patient/record'
+      preLoaderRoute: typeof AuthenticatedPatientRecordRouteImport
+      parentRoute: typeof AuthenticatedPatientRoute
+    }
+    '/_authenticated/patient/prescriptions': {
+      id: '/_authenticated/patient/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/patient/prescriptions'
+      preLoaderRoute: typeof AuthenticatedPatientPrescriptionsRouteImport
+      parentRoute: typeof AuthenticatedPatientRoute
+    }
+    '/_authenticated/patient/messages': {
+      id: '/_authenticated/patient/messages'
+      path: '/messages'
+      fullPath: '/patient/messages'
+      preLoaderRoute: typeof AuthenticatedPatientMessagesRouteImport
+      parentRoute: typeof AuthenticatedPatientRoute
+    }
+    '/_authenticated/patient/appointments': {
+      id: '/_authenticated/patient/appointments'
+      path: '/appointments'
+      fullPath: '/patient/appointments'
+      preLoaderRoute: typeof AuthenticatedPatientAppointmentsRouteImport
+      parentRoute: typeof AuthenticatedPatientRoute
+    }
+    '/_authenticated/medecin/video': {
+      id: '/_authenticated/medecin/video'
+      path: '/video'
+      fullPath: '/medecin/video'
+      preLoaderRoute: typeof AuthenticatedMedecinVideoRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/medecin/records': {
+      id: '/_authenticated/medecin/records'
+      path: '/records'
+      fullPath: '/medecin/records'
+      preLoaderRoute: typeof AuthenticatedMedecinRecordsRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/medecin/prescriptions': {
+      id: '/_authenticated/medecin/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/medecin/prescriptions'
+      preLoaderRoute: typeof AuthenticatedMedecinPrescriptionsRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/medecin/patients': {
+      id: '/_authenticated/medecin/patients'
+      path: '/patients'
+      fullPath: '/medecin/patients'
+      preLoaderRoute: typeof AuthenticatedMedecinPatientsRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/medecin/messages': {
+      id: '/_authenticated/medecin/messages'
+      path: '/messages'
+      fullPath: '/medecin/messages'
+      preLoaderRoute: typeof AuthenticatedMedecinMessagesRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/medecin/diagnostics': {
+      id: '/_authenticated/medecin/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/medecin/diagnostics'
+      preLoaderRoute: typeof AuthenticatedMedecinDiagnosticsRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/medecin/availability': {
+      id: '/_authenticated/medecin/availability'
+      path: '/availability'
+      fullPath: '/medecin/availability'
+      preLoaderRoute: typeof AuthenticatedMedecinAvailabilityRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
+    '/_authenticated/medecin/agenda': {
+      id: '/_authenticated/medecin/agenda'
+      path: '/agenda'
+      fullPath: '/medecin/agenda'
+      preLoaderRoute: typeof AuthenticatedMedecinAgendaRouteImport
+      parentRoute: typeof AuthenticatedMedecinRoute
+    }
     '/_authenticated/call/$id': {
       id: '/_authenticated/call/$id'
       path: '/call/$id'
@@ -151,20 +572,137 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCallIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/validation': {
+      id: '/_authenticated/admin/validation'
+      path: '/validation'
+      fullPath: '/admin/validation'
+      preLoaderRoute: typeof AuthenticatedAdminValidationRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/stats': {
+      id: '/_authenticated/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AuthenticatedAdminStatsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/security': {
+      id: '/_authenticated/admin/security'
+      path: '/security'
+      fullPath: '/admin/security'
+      preLoaderRoute: typeof AuthenticatedAdminSecurityRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/activity': {
+      id: '/_authenticated/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AuthenticatedAdminActivityRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminActivityRoute: typeof AuthenticatedAdminActivityRoute
+  AuthenticatedAdminSecurityRoute: typeof AuthenticatedAdminSecurityRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminValidationRoute: typeof AuthenticatedAdminValidationRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminActivityRoute: AuthenticatedAdminActivityRoute,
+  AuthenticatedAdminSecurityRoute: AuthenticatedAdminSecurityRoute,
+  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+  AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminValidationRoute: AuthenticatedAdminValidationRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedMedecinRouteChildren {
+  AuthenticatedMedecinAgendaRoute: typeof AuthenticatedMedecinAgendaRoute
+  AuthenticatedMedecinAvailabilityRoute: typeof AuthenticatedMedecinAvailabilityRoute
+  AuthenticatedMedecinDiagnosticsRoute: typeof AuthenticatedMedecinDiagnosticsRoute
+  AuthenticatedMedecinMessagesRoute: typeof AuthenticatedMedecinMessagesRoute
+  AuthenticatedMedecinPatientsRoute: typeof AuthenticatedMedecinPatientsRoute
+  AuthenticatedMedecinPrescriptionsRoute: typeof AuthenticatedMedecinPrescriptionsRoute
+  AuthenticatedMedecinRecordsRoute: typeof AuthenticatedMedecinRecordsRoute
+  AuthenticatedMedecinVideoRoute: typeof AuthenticatedMedecinVideoRoute
+  AuthenticatedMedecinIndexRoute: typeof AuthenticatedMedecinIndexRoute
+}
+
+const AuthenticatedMedecinRouteChildren: AuthenticatedMedecinRouteChildren = {
+  AuthenticatedMedecinAgendaRoute: AuthenticatedMedecinAgendaRoute,
+  AuthenticatedMedecinAvailabilityRoute: AuthenticatedMedecinAvailabilityRoute,
+  AuthenticatedMedecinDiagnosticsRoute: AuthenticatedMedecinDiagnosticsRoute,
+  AuthenticatedMedecinMessagesRoute: AuthenticatedMedecinMessagesRoute,
+  AuthenticatedMedecinPatientsRoute: AuthenticatedMedecinPatientsRoute,
+  AuthenticatedMedecinPrescriptionsRoute:
+    AuthenticatedMedecinPrescriptionsRoute,
+  AuthenticatedMedecinRecordsRoute: AuthenticatedMedecinRecordsRoute,
+  AuthenticatedMedecinVideoRoute: AuthenticatedMedecinVideoRoute,
+  AuthenticatedMedecinIndexRoute: AuthenticatedMedecinIndexRoute,
+}
+
+const AuthenticatedMedecinRouteWithChildren =
+  AuthenticatedMedecinRoute._addFileChildren(AuthenticatedMedecinRouteChildren)
+
+interface AuthenticatedPatientRouteChildren {
+  AuthenticatedPatientAppointmentsRoute: typeof AuthenticatedPatientAppointmentsRoute
+  AuthenticatedPatientMessagesRoute: typeof AuthenticatedPatientMessagesRoute
+  AuthenticatedPatientPrescriptionsRoute: typeof AuthenticatedPatientPrescriptionsRoute
+  AuthenticatedPatientRecordRoute: typeof AuthenticatedPatientRecordRoute
+  AuthenticatedPatientSettingsRoute: typeof AuthenticatedPatientSettingsRoute
+  AuthenticatedPatientVideoRoute: typeof AuthenticatedPatientVideoRoute
+  AuthenticatedPatientIndexRoute: typeof AuthenticatedPatientIndexRoute
+}
+
+const AuthenticatedPatientRouteChildren: AuthenticatedPatientRouteChildren = {
+  AuthenticatedPatientAppointmentsRoute: AuthenticatedPatientAppointmentsRoute,
+  AuthenticatedPatientMessagesRoute: AuthenticatedPatientMessagesRoute,
+  AuthenticatedPatientPrescriptionsRoute:
+    AuthenticatedPatientPrescriptionsRoute,
+  AuthenticatedPatientRecordRoute: AuthenticatedPatientRecordRoute,
+  AuthenticatedPatientSettingsRoute: AuthenticatedPatientSettingsRoute,
+  AuthenticatedPatientVideoRoute: AuthenticatedPatientVideoRoute,
+  AuthenticatedPatientIndexRoute: AuthenticatedPatientIndexRoute,
+}
+
+const AuthenticatedPatientRouteWithChildren =
+  AuthenticatedPatientRoute._addFileChildren(AuthenticatedPatientRouteChildren)
+
 interface AuthenticatedRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedMedecinRoute: typeof AuthenticatedMedecinRoute
-  AuthenticatedPatientRoute: typeof AuthenticatedPatientRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedMedecinRoute: typeof AuthenticatedMedecinRouteWithChildren
+  AuthenticatedPatientRoute: typeof AuthenticatedPatientRouteWithChildren
   AuthenticatedCallIdRoute: typeof AuthenticatedCallIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedMedecinRoute: AuthenticatedMedecinRoute,
-  AuthenticatedPatientRoute: AuthenticatedPatientRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedMedecinRoute: AuthenticatedMedecinRouteWithChildren,
+  AuthenticatedPatientRoute: AuthenticatedPatientRouteWithChildren,
   AuthenticatedCallIdRoute: AuthenticatedCallIdRoute,
 }
 
