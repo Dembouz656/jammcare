@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { Button } from "@/components/ui/button";
+import { NotificationsBell } from "@/components/NotificationsBell";
 
 interface NavItem { label: string; icon: LucideIcon; active?: boolean; onClick?: () => void; sectionId?: string; to?: string }
 
@@ -72,6 +73,7 @@ export function DashboardShell({ role, name, initials, nav, children }: Props) {
               })}
             </nav>
             <div className="mt-6 space-y-2">
+              <NotificationsBell />
               <LangSwitcher className="w-full justify-center" />
               <Button
                 onClick={() => signOut()}
@@ -89,6 +91,7 @@ export function DashboardShell({ role, name, initials, nav, children }: Props) {
           <div className="mb-4 flex items-center justify-between lg:hidden">
             <p className="text-display text-lg">MediRural</p>
             <div className="flex items-center gap-2">
+              <NotificationsBell />
               <LangSwitcher />
               <Button onClick={() => signOut()} variant="ghost" size="sm">
                 <LogOut className="h-4 w-4" />

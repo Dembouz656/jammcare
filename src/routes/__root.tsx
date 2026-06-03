@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/use-auth";
 import { I18nProvider } from "@/lib/i18n";
 import { Toaster } from "@/components/ui/sonner";
+import { ChatbotWidget } from "@/components/ChatbotWidget";
 
 function NotFoundComponent() {
   return (
@@ -116,6 +117,7 @@ function RootComponent() {
       <I18nProvider>
         <AuthProvider>
           <Outlet />
+          <ChatbotWidget />
           <Toaster />
         </AuthProvider>
       </I18nProvider>

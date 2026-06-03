@@ -169,6 +169,48 @@ export type Database = {
         }
         Relationships: []
       }
+      health_facilities: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          hours: string | null
+          id: string
+          lat: number
+          lng: number
+          name: string
+          phone: string | null
+          region: string | null
+          type: Database["public"]["Enums"]["facility_type"]
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          hours?: string | null
+          id?: string
+          lat: number
+          lng: number
+          name: string
+          phone?: string | null
+          region?: string | null
+          type: Database["public"]["Enums"]["facility_type"]
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          hours?: string | null
+          id?: string
+          lat?: number
+          lng?: number
+          name?: string
+          phone?: string | null
+          region?: string | null
+          type?: Database["public"]["Enums"]["facility_type"]
+        }
+        Relationships: []
+      }
       medical_records: {
         Row: {
           consultation_id: string | null
@@ -435,6 +477,7 @@ export type Database = {
         | "completed"
         | "cancelled"
       doctor_status: "pending" | "approved" | "rejected" | "suspended"
+      facility_type: "hospital" | "health_center" | "health_post" | "pharmacy"
       gender: "male" | "female" | "other"
     }
     CompositeTypes: {
@@ -572,6 +615,7 @@ export const Constants = {
         "cancelled",
       ],
       doctor_status: ["pending", "approved", "rejected", "suspended"],
+      facility_type: ["hospital", "health_center", "health_post", "pharmacy"],
       gender: ["male", "female", "other"],
     },
   },
