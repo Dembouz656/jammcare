@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ShieldCheck, Lock, HeartPulse, CalendarCheck2, Video, MessageSquare, FileText, ArrowRight } from "lucide-react";
+import { ShieldCheck, Lock, HeartPulse, CalendarCheck2, Video, MessageSquare, FileText, ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
@@ -79,6 +79,11 @@ function Landing() {
               <Button asChild size="lg" variant="outline" className="border-border bg-card/60 backdrop-blur">
                 <Link to="/auth">
                   {t("already_member")} {t("login")}
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="ghost" className="text-foreground">
+                <Link to="/sante-map">
+                  <MapPin className="mr-1 h-4 w-4" /> Carte de santé
                 </Link>
               </Button>
             </div>
