@@ -39,10 +39,11 @@ export const Route = createFileRoute("/api/chat")({
 
         try {
           const gateway = createLovableAiGatewayProvider(key);
+          const modelMessages = await convertToModelMessages(messages as UIMessage[]);
           const result = streamText({
             model: gateway("google/gemini-2.5-flash"),
             system: SYSTEM_PROMPT,
-            messages: convertToModelMessages(messages as UIMessage[]),
+            messages: modelMessages,
           });
           return result.toUIMessageStreamResponse({
             originalMessages: messages as UIMessage[],

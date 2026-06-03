@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SanteMapRouteImport } from './routes/sante-map'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedPatientRouteImport } from './routes/_authenticated/patient'
 import { Route as AuthenticatedMedecinRouteImport } from './routes/_authenticated/medecin'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -40,6 +42,11 @@ import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminSecurityRouteImport } from './routes/_authenticated/admin.security'
 import { Route as AuthenticatedAdminActivityRouteImport } from './routes/_authenticated/admin.activity'
 
+const SanteMapRoute = SanteMapRouteImport.update({
+  id: '/sante-map',
+  path: '/sante-map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -52,6 +59,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedPatientRoute = AuthenticatedPatientRouteImport.update({
@@ -213,9 +225,11 @@ const AuthenticatedAdminActivityRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/sante-map': typeof SanteMapRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/medecin': typeof AuthenticatedMedecinRouteWithChildren
   '/patient': typeof AuthenticatedPatientRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
   '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
@@ -244,6 +258,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/sante-map': typeof SanteMapRoute
+  '/api/chat': typeof ApiChatRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
   '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
@@ -274,9 +290,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/sante-map': typeof SanteMapRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/medecin': typeof AuthenticatedMedecinRouteWithChildren
   '/_authenticated/patient': typeof AuthenticatedPatientRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/_authenticated/admin/activity': typeof AuthenticatedAdminActivityRoute
   '/_authenticated/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
@@ -307,9 +325,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/sante-map'
     | '/admin'
     | '/medecin'
     | '/patient'
+    | '/api/chat'
     | '/admin/activity'
     | '/admin/security'
     | '/admin/settings'
@@ -338,6 +358,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/sante-map'
+    | '/api/chat'
     | '/admin/activity'
     | '/admin/security'
     | '/admin/settings'
@@ -367,9 +389,11 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/sante-map'
     | '/_authenticated/admin'
     | '/_authenticated/medecin'
     | '/_authenticated/patient'
+    | '/api/chat'
     | '/_authenticated/admin/activity'
     | '/_authenticated/admin/security'
     | '/_authenticated/admin/settings'
@@ -400,10 +424,19 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  SanteMapRoute: typeof SanteMapRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sante-map': {
+      id: '/sante-map'
+      path: '/sante-map'
+      fullPath: '/sante-map'
+      preLoaderRoute: typeof SanteMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -423,6 +456,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/patient': {
@@ -714,6 +754,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  SanteMapRoute: SanteMapRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
