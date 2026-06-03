@@ -1,4 +1,4 @@
-import { Activity, BarChart3, CalendarCheck2, CalendarDays, Clock, FileText, Home, MessageSquare, Pill, Settings, ShieldCheck, Stethoscope, Users, Video } from "lucide-react";
+import { Activity, BarChart3, CalendarCheck2, CalendarDays, Clock, FileText, Home, MapPin, MessageSquare, Pill, Settings, ShieldCheck, Stethoscope, Users, Video } from "lucide-react";
 import { useRouterState } from "@tanstack/react-router";
 
 export function usePatientNav() {
@@ -11,6 +11,7 @@ export function usePatientNav() {
     { label: "Messages", icon: MessageSquare, to: "/patient/messages", active: a("/patient/messages") },
     { label: "Mon dossier", icon: FileText, to: "/patient/record", active: a("/patient/record") },
     { label: "Ordonnances", icon: Pill, to: "/patient/prescriptions", active: a("/patient/prescriptions") },
+    { label: "Carte de santé", icon: MapPin, to: "/sante-map", active: a("/sante-map") },
     { label: "Paramètres", icon: Settings, to: "/patient/settings", active: a("/patient/settings") },
   ];
 }
