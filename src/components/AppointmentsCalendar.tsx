@@ -25,10 +25,10 @@ interface Props {
 }
 
 const STATUS_COLORS: Record<string, { bg: string; border: string; fg: string }> = {
-  pending: { bg: "hsl(var(--warning) / 0.18)", border: "hsl(var(--warning))", fg: "hsl(var(--foreground))" },
-  confirmed: { bg: "hsl(var(--primary) / 0.18)", border: "hsl(var(--primary))", fg: "hsl(var(--primary))" },
-  completed: { bg: "hsl(var(--success) / 0.18)", border: "hsl(var(--success))", fg: "hsl(var(--foreground))" },
-  cancelled: { bg: "hsl(var(--destructive) / 0.15)", border: "hsl(var(--destructive))", fg: "hsl(var(--destructive))" },
+  pending: { bg: "color-mix(in oklab, var(--warning) 22%, transparent)", border: "var(--warning)", fg: "var(--foreground)" },
+  confirmed: { bg: "color-mix(in oklab, var(--primary) 22%, transparent)", border: "var(--primary)", fg: "var(--primary)" },
+  completed: { bg: "color-mix(in oklab, var(--success) 22%, transparent)", border: "var(--success)", fg: "var(--foreground)" },
+  cancelled: { bg: "color-mix(in oklab, var(--destructive) 18%, transparent)", border: "var(--destructive)", fg: "var(--destructive)" },
 };
 
 export function AppointmentsCalendar({ events, onSelectEvent, onSelectSlot, selectable, height = 620 }: Props) {
