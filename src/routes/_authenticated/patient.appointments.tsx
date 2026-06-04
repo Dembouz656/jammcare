@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Plus, Video } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Plus, Video, XCircle } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { AppointmentsCalendar, type ApptEvent } from "@/components/AppointmentsCalendar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -91,6 +92,25 @@ function PatientAppointments() {
     setOpen(false); setDoctorId(""); setDate(""); setSlot(""); setReason("");
     void load();
   };
+
+  const cancel = async (id: string) => {
+    const { error } = await supabase.from("appointments").update({ status: "cancelled" }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Rendez-vous annulé");
+    void load();
+  };
+
+  const events = useMemo<ApptEvent[]>(
+    () =>
+      appointments
+        .filter((a) => a.status !== "cancelled")
+        .map((a) => {
+          const start = new Date(a.scheduled_at);
+          const end = new Date(start.getTime() + 30 * 60000);
+          return { id: a.id, title: `${a.doctor_name ?? "Médecin"} — ${a.reason ?? "Consultation"}`, start, end, status: a.status };
+        }),
+    [appointments],
+  );
 
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "P";
 
