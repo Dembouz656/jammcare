@@ -41,10 +41,25 @@ function Page() {
     toast.success("Mis à jour"); void load();
   };
 
+  const events = useMemo<ApptEvent[]>(
+    () =>
+      appts
+        .filter((a) => a.status !== "cancelled")
+        .map((a) => {
+          const start = new Date(a.scheduled_at);
+          const end = new Date(start.getTime() + 30 * 60000);
+          return { id: a.id, title: `${a.patient_name ?? "Patient"} — ${a.reason ?? "Consultation"}`, start, end, status: a.status };
+        }),
+    [appts],
+  );
+
   const initials = name.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "Dr";
   return (
     <DashboardShell role={t("doctor")} name={name || t("doctor")} initials={initials} nav={nav}>
       <h1 className="mb-6 text-display text-3xl">{t("agenda")}</h1>
+      <div className="mb-6">
+        <AppointmentsCalendar events={events} />
+      </div>
       <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
         {appts.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">{t("no_appointments")}</p>
