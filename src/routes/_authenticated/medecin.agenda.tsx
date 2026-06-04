@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Video, XCircle } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { AppointmentsCalendar, type ApptEvent } from "@/components/AppointmentsCalendar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
