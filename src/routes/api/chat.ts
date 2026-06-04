@@ -1,36 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { SYSTEM_PROMPTS, type ChatLang } from "@/lib/chatbot-i18n";
 
-const SYSTEM_PROMPT = `Tu es JammCare Assistant, l'assistant médical virtuel de JammCare, une plateforme de télémédecine pour les zones rurales du Sénégal.
-
-Ton rôle:
-- Répondre en français de manière chaleureuse, simple et bienveillante.
-- Aider les utilisateurs à naviguer dans l'application (prise de rendez-vous, ordonnances, messages, dossiers, téléconsultation vidéo, carte des centres de santé).
-- Donner des informations générales de santé et orienter vers un médecin pour tout symptôme sérieux.
-- Ne JAMAIS poser de diagnostic ni prescrire de médicaments — toujours rediriger vers un professionnel de santé.
-- Pour une urgence vitale, dire d'appeler immédiatement le SAMU (1515 au Sénégal) ou le 18 (pompiers).
-
-Liens utiles dans l'app:
-- Prendre rendez-vous: /patient/appointments
-- Mes ordonnances: /patient/prescriptions
-- Mon dossier médical: /patient/record
-- Messagerie: /patient/messages
-- Téléconsultation vidéo: /patient/video
-- Carte des centres de santé: /sante-map
-
-Réponses courtes (3-6 phrases max), avec un ton humain. Utilise un emoji pertinent au début quand approprié.`;
-
-type Body = { messages?: unknown };
+type Body = { messages?: unknown; language?: unknown };
 
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const { messages } = (await request.json()) as Body;
+        const { messages, language } = (await request.json()) as Body;
         if (!Array.isArray(messages)) {
           return new Response("Messages requis", { status: 400 });
         }
+        const lang: ChatLang = language === "wo" ? "wo" : "fr";
 
         const key = process.env.LOVABLE_API_KEY;
         if (!key) {
@@ -42,7 +25,7 @@ export const Route = createFileRoute("/api/chat")({
           const modelMessages = await convertToModelMessages(messages as UIMessage[]);
           const result = streamText({
             model: gateway("google/gemini-2.5-flash"),
-            system: SYSTEM_PROMPT,
+            system: SYSTEM_PROMPTS[lang],
             messages: modelMessages,
           });
           return result.toUIMessageStreamResponse({
