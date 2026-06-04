@@ -156,6 +156,9 @@ function PatientAppointments() {
           </DialogContent>
         </Dialog>
       </div>
+      <div className="mb-6">
+        <AppointmentsCalendar events={events} />
+      </div>
       <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
         {appointments.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">{t("no_upcoming")}</p>
@@ -175,6 +178,11 @@ function PatientAppointments() {
                   {a.status === "confirmed" && (
                     <Button asChild size="sm" className="bg-gradient-primary text-primary-foreground">
                       <Link to="/call/$id" params={{ id: a.id }}><Video className="mr-1 h-3.5 w-3.5" /> {t("join_call")}</Link>
+                    </Button>
+                  )}
+                  {(a.status === "pending" || a.status === "confirmed") && (
+                    <Button size="sm" variant="ghost" onClick={() => cancel(a.id)} className="h-8 text-destructive">
+                      <XCircle className="mr-1 h-3.5 w-3.5" /> Annuler
                     </Button>
                   )}
                 </div>
