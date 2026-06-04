@@ -1,38 +1,67 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Pill } from "lucide-react";
+import { Pill, Download } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
 import { usePatientNav } from "@/lib/dashboard-nav";
+import { generatePrescriptionPdf, type RxMed } from "@/lib/prescription-pdf";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/patient/prescriptions")({ component: Page });
 
-interface Med { name?: string; dosage?: string; frequency?: string; duration?: string; }
-interface Rx { id: string; issued_at: string; instructions: string | null; medications: Med[] | null; doctor_id: string; doctor_name?: string; }
+interface Rx { id: string; issued_at: string; instructions: string | null; medications: RxMed[] | null; doctor_id: string; doctor_name?: string; doctor_specialty?: string; doctor_license?: string; }
 
 function Page() {
   const { user } = useAuth();
   const { t } = useI18n();
   const nav = usePatientNav();
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState<string | null>(null);
+  const [city, setCity] = useState<string | null>(null);
   const [rxs, setRxs] = useState<Rx[]>([]);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data: p } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
+      const { data: p } = await supabase.from("profiles").select("full_name, phone, city").eq("id", user.id).maybeSingle();
       setName(p?.full_name ?? "");
+      setPhone(p?.phone ?? null);
+      setCity(p?.city ?? null);
       const { data: r } = await supabase.from("prescriptions").select("id, issued_at, instructions, medications, doctor_id").eq("patient_id", user.id).order("issued_at", { ascending: false });
       if (r?.length) {
         const ids = [...new Set(r.map((x) => x.doctor_id))];
-        const { data: profs } = await supabase.from("profiles").select("id, full_name").in("id", ids);
-        const m = new Map(profs?.map((p) => [p.id, p.full_name]) ?? []);
-        setRxs(r.map((x) => ({ ...x, medications: x.medications as Med[] | null, doctor_name: m.get(x.doctor_id) ?? "Médecin" })));
+        const [{ data: profs }, { data: docs }] = await Promise.all([
+          supabase.from("profiles").select("id, full_name").in("id", ids),
+          supabase.from("doctors").select("id, specialty, license_number").in("id", ids),
+        ]);
+        const pm = new Map(profs?.map((p) => [p.id, p.full_name]) ?? []);
+        const dm = new Map(docs?.map((d) => [d.id, d]) ?? []);
+        setRxs(r.map((x) => {
+          const di = dm.get(x.doctor_id);
+          return { ...x, medications: x.medications as RxMed[] | null, doctor_name: pm.get(x.doctor_id) ?? "Médecin", doctor_specialty: di?.specialty, doctor_license: di?.license_number };
+        }));
       } else setRxs([]);
     })();
   }, [user]);
+
+  const download = async (rx: Rx) => {
+    if (!user) return;
+    try {
+      await generatePrescriptionPdf({
+        id: rx.id,
+        issued_at: rx.issued_at,
+        instructions: rx.instructions,
+        medications: rx.medications,
+        doctor: { id: rx.doctor_id, full_name: rx.doctor_name ?? "Médecin", specialty: rx.doctor_specialty, license_number: rx.doctor_license },
+        patient: { id: user.id, full_name: name, phone, city },
+      });
+    } catch (e) {
+      console.error(e); toast.error("Erreur PDF");
+    }
+  };
 
   const initials = name.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "P";
   return (
@@ -51,7 +80,10 @@ function Page() {
                 <p className="text-sm font-medium">Dr. {rx.doctor_name}</p>
                 <p className="text-xs text-muted-foreground">Émise le {new Date(rx.issued_at).toLocaleDateString("fr-FR", { dateStyle: "long" })}</p>
               </div>
-              <span className="rounded-full bg-primary-soft px-2.5 py-1 text-[10px] uppercase tracking-wider text-primary">Ordonnance</span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-primary-soft px-2.5 py-1 text-[10px] uppercase tracking-wider text-primary">Ordonnance</span>
+                <Button size="sm" variant="outline" onClick={() => download(rx)}><Download className="mr-1 h-3.5 w-3.5" /> PDF</Button>
+              </div>
             </header>
             {rx.medications && rx.medications.length > 0 && (
               <ul className="space-y-2">

@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Plus, Video } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Plus, Video, XCircle } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { AppointmentsCalendar, type ApptEvent } from "@/components/AppointmentsCalendar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -92,6 +93,25 @@ function PatientAppointments() {
     void load();
   };
 
+  const cancel = async (id: string) => {
+    const { error } = await supabase.from("appointments").update({ status: "cancelled" }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Rendez-vous annulé");
+    void load();
+  };
+
+  const events = useMemo<ApptEvent[]>(
+    () =>
+      appointments
+        .filter((a) => a.status !== "cancelled")
+        .map((a) => {
+          const start = new Date(a.scheduled_at);
+          const end = new Date(start.getTime() + 30 * 60000);
+          return { id: a.id, title: `${a.doctor_name ?? "Médecin"} — ${a.reason ?? "Consultation"}`, start, end, status: a.status };
+        }),
+    [appointments],
+  );
+
   const initials = profileName.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase() || "P";
 
   return (
@@ -136,6 +156,9 @@ function PatientAppointments() {
           </DialogContent>
         </Dialog>
       </div>
+      <div className="mb-6">
+        <AppointmentsCalendar events={events} />
+      </div>
       <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
         {appointments.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">{t("no_upcoming")}</p>
@@ -155,6 +178,11 @@ function PatientAppointments() {
                   {a.status === "confirmed" && (
                     <Button asChild size="sm" className="bg-gradient-primary text-primary-foreground">
                       <Link to="/call/$id" params={{ id: a.id }}><Video className="mr-1 h-3.5 w-3.5" /> {t("join_call")}</Link>
+                    </Button>
+                  )}
+                  {(a.status === "pending" || a.status === "confirmed") && (
+                    <Button size="sm" variant="ghost" onClick={() => cancel(a.id)} className="h-8 text-destructive">
+                      <XCircle className="mr-1 h-3.5 w-3.5" /> Annuler
                     </Button>
                   )}
                 </div>
