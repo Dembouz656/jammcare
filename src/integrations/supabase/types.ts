@@ -518,6 +518,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_doctor_sensitive: {
+        Args: { _doctor_id: string }
+        Returns: {
+          approved_at: string
+          approved_by: string
+          license_number: string
+        }[]
+      }
       get_primary_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]

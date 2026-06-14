@@ -22,11 +22,19 @@ function Page() {
     if (!user) return;
     const { data: p } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
     setName(p?.full_name ?? "");
-    const { data: all } = await supabase.from("doctors").select("id, specialty, license_number, status").order("status");
+    const { data: all } = await supabase.from("doctors").select("id, specialty, status").order("status");
     if (all?.length) {
       const { data: profs } = await supabase.from("profiles").select("id, full_name, city").in("id", all.map((d) => d.id));
       const m = new Map(profs?.map((p) => [p.id, p]) ?? []);
-      setDocs(all.map((d) => ({ ...d, full_name: m.get(d.id)?.full_name ?? "—", city: m.get(d.id)?.city ?? null })));
+      const licenses = await Promise.all(
+        all.map(async (d) => {
+          const { data } = await (supabase as unknown as { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: Array<{ license_number: string }> | null }> })
+            .rpc("get_doctor_sensitive", { _doctor_id: d.id });
+          return [d.id, data?.[0]?.license_number ?? ""] as const;
+        }),
+      );
+      const lm = new Map(licenses);
+      setDocs(all.map((d) => ({ ...d, license_number: lm.get(d.id) ?? "", full_name: m.get(d.id)?.full_name ?? "—", city: m.get(d.id)?.city ?? null })));
     } else setDocs([]);
   };
   useEffect(() => { void load(); }, [user]);

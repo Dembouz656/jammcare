@@ -35,13 +35,21 @@ function Page() {
         const ids = [...new Set(r.map((x) => x.doctor_id))];
         const [{ data: profs }, { data: docs }] = await Promise.all([
           supabase.from("profiles").select("id, full_name").in("id", ids),
-          supabase.from("doctors").select("id, specialty, license_number").in("id", ids),
+          supabase.from("doctors").select("id, specialty").in("id", ids),
         ]);
+        const licenseEntries = await Promise.all(
+          ids.map(async (id) => {
+            const { data } = await (supabase as unknown as { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: Array<{ license_number: string }> | null }> })
+              .rpc("get_doctor_sensitive", { _doctor_id: id });
+            return [id, data?.[0]?.license_number ?? ""] as const;
+          }),
+        );
+        const lm = new Map(licenseEntries);
         const pm = new Map(profs?.map((p) => [p.id, p.full_name]) ?? []);
         const dm = new Map(docs?.map((d) => [d.id, d]) ?? []);
         setRxs(r.map((x) => {
           const di = dm.get(x.doctor_id);
-          return { ...x, medications: x.medications as RxMed[] | null, doctor_name: pm.get(x.doctor_id) ?? "Médecin", doctor_specialty: di?.specialty, doctor_license: di?.license_number };
+          return { ...x, medications: x.medications as RxMed[] | null, doctor_name: pm.get(x.doctor_id) ?? "Médecin", doctor_specialty: di?.specialty, doctor_license: lm.get(x.doctor_id) };
         }));
       } else setRxs([]);
     })();

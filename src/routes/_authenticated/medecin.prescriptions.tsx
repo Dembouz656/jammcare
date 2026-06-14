@@ -26,13 +26,15 @@ function Page() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: p }, { data: d }] = await Promise.all([
+      const [{ data: p }, { data: d }, { data: lic }] = await Promise.all([
         supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
-        supabase.from("doctors").select("specialty, license_number").eq("id", user.id).maybeSingle(),
+        supabase.from("doctors").select("specialty").eq("id", user.id).maybeSingle(),
+        (supabase as unknown as { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: Array<{ license_number: string }> | null }> })
+          .rpc("get_doctor_sensitive", { _doctor_id: user.id }),
       ]);
       setName(p?.full_name ?? "");
       setSpecialty(d?.specialty ?? "");
-      setLicense(d?.license_number ?? "");
+      setLicense(lic?.[0]?.license_number ?? "");
       const { data: r } = await supabase.from("prescriptions").select("id, issued_at, instructions, medications, patient_id").eq("doctor_id", user.id).order("issued_at", { ascending: false });
       if (r?.length) {
         const ids = [...new Set(r.map((x) => x.patient_id))];
