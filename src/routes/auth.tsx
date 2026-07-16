@@ -117,6 +117,20 @@ function LoginForm() {
         {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         Se connecter
       </Button>
+      <button
+        type="button"
+        onClick={async () => {
+          if (!email) { toast.error("Saisissez votre email d'abord"); return; }
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password`,
+          });
+          if (error) toast.error(error.message);
+          else toast.success("Email de réinitialisation envoyé");
+        }}
+        className="w-full text-center text-sm text-muted-foreground hover:text-foreground"
+      >
+        Mot de passe oublié ?
+      </button>
     </form>
   );
 }
