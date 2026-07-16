@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SanteMapRouteImport } from './routes/sante-map'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -45,6 +46,11 @@ import { Route as AuthenticatedAdminActivityRouteImport } from './routes/_authen
 const SanteMapRoute = SanteMapRouteImport.update({
   id: '/sante-map',
   path: '/sante-map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -225,6 +231,7 @@ const AuthenticatedAdminActivityRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sante-map': typeof SanteMapRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/medecin': typeof AuthenticatedMedecinRouteWithChildren
@@ -258,6 +265,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sante-map': typeof SanteMapRoute
   '/api/chat': typeof ApiChatRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sante-map': typeof SanteMapRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/medecin': typeof AuthenticatedMedecinRouteWithChildren
@@ -325,6 +334,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/reset-password'
     | '/sante-map'
     | '/admin'
     | '/medecin'
@@ -358,6 +368,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/reset-password'
     | '/sante-map'
     | '/api/chat'
     | '/admin/activity'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/reset-password'
     | '/sante-map'
     | '/_authenticated/admin'
     | '/_authenticated/medecin'
@@ -424,6 +436,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SanteMapRoute: typeof SanteMapRoute
   ApiChatRoute: typeof ApiChatRoute
 }
@@ -435,6 +448,13 @@ declare module '@tanstack/react-router' {
       path: '/sante-map'
       fullPath: '/sante-map'
       preLoaderRoute: typeof SanteMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -754,6 +774,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SanteMapRoute: SanteMapRoute,
   ApiChatRoute: ApiChatRoute,
 }
